@@ -1,21 +1,21 @@
 const express = require("express")
-const id = require("shortid")
+const shortid = require("shortid")
 const server = express()
 
 let users = [
 
             {
-            id: id.generate(), // hint: use the shortid npm package to generate it
-            name: "Jane Doe", // String, required
-            bio: "Not Tarzan's Wife, another Jane",  // String, required
+                id: shortid.generate(), // hint: use the shortid npm package to generate it
+                name: "Jane Doe", // String, required
+                bio: "Not Tarzan's Wife, another Jane",  // String, required
              },
             {
-                id: id.generate(),
+                id: shortid.generate(),
                 name: "John Doe",
                 bio: "Tarzan himself"
             },
             {
-                id: id.generate(),
+                id: shortid.generate(),
                 name: "King Louie ",
                 bio: "Monkey King"
             }
@@ -23,8 +23,8 @@ let users = [
 ];
 
 server.get('/', (req, res) => {
-    //res.json({ hello: "World" })
-    res.json(users)
+    res.json({ hello: "World" })
+    //res.json(users)
 })
 
 server.get('/api/users', (req, res) => {
@@ -80,23 +80,29 @@ server.get("/api/users", (req, res) => {
 })
 
 server.delete(`/api/users/:id`, (req, res) => {
-    const { id } = req.params
+    try {
+        const { id } = req.params
 
-    if (!users || !users.id) {
-        res.status(500).json({
-            errorMessage: 'delete error'
-        })
-    } else {
-        const deleted = users.find(user => user.id === id);
-
-        if (deleted) {
-            users = users.filter(user => user.id !== id);
-            res.status(200).json(deleted);
+        if (!id) {
+            res.status(500).json({
+                errorMessage: 'ID Missing'
+            })
         } else {
-            res.status(404).json({ message: 'user not found' });
-        }
+            const deleted = users.find(user => user.id === id);
 
+            if (deleted) {
+                users = users.filter(user => user.id !== id);
+                res.status(200).json(deleted);
+            } else {
+                res.status(404).json({ message: 'user id not found' });
+            }
+
+        }
     }
+    catch(error) {
+        console.log(error)
+    }
+    
 })
 
 server.patch('/api/users/:id', (req, res) => {
@@ -128,7 +134,7 @@ server.put('/api/users/:id', (req, res) => {
     const { id } = req.params;
     const changes = req.body;
     changes.id = id;
-    if (!users || !users.id) {
+    if (!id) {
         res.status(500).json({
             errorMessage: 'user could not be changed'
         })
