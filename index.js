@@ -1,15 +1,30 @@
 const express = require("express")
-// const shortid = require("shortid")
+const id = require("shortid")
 const server = express()
 
-let users = [{
-    //id: shortid.generate(), // hint: use the shortid npm package to generate it
-    name: "Jane Doe", // String, required
-    bio: "Not Tarzan's Wife, another Jane",  // String, required
-}];
+let users = [
+
+            {
+            id: id.generate(), // hint: use the shortid npm package to generate it
+            name: "Jane Doe", // String, required
+            bio: "Not Tarzan's Wife, another Jane",  // String, required
+             },
+            {
+                id: id.generate(),
+                name: "John Doe",
+                bio: "Tarzan himself"
+            },
+            {
+                id: id.generate(),
+                name: "King Louie ",
+                bio: "Monkey King"
+            }
+
+];
 
 server.get('/', (req, res) => {
-    res.json({ hello: "World" })
+    //res.json({ hello: "World" })
+    res.json(users)
 })
 
 server.get('/api/users', (req, res) => {
@@ -17,7 +32,7 @@ server.get('/api/users', (req, res) => {
         res.status(200).json(users)
     } else {
         res.status(500).json({
-            errorMessage: "userd not found"
+            errorMessage: "user not found"
         })
     }
 })
